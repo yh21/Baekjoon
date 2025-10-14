@@ -6,17 +6,30 @@ string = list(sys.stdin.readline().strip())
 pattern = ['I', 'O'] * N + ['I']
 lens = len(string)
 lenp = len(pattern)
-# print(pattern) for Debugging
 
+# failure function
+failure = [0] * lenp
+j = 0
+for k in range(1, lenp):
+    while j > 0 and pattern[k] != pattern[j]:
+        j = failure[j - 1]
+    if pattern[k] == pattern[j]:
+        j += 1
+    failure[k] = j
+
+i = 0
+j = 0
 count = 0
-for i in range(lens - lenp + 1):
-    j = 0
-    while j < lenp:
-        if string[i + j] == pattern[j]:
-            j += 1
-        else:
-            break
-    if j == lenp:
-        count += 1
-    
+while i < lens:
+    if string[i] == pattern[j]:
+        i += 1
+        j += 1
+        if j == lenp:
+            count += 1
+            j = failure[j - 1]
+    elif j == 0:
+        i += 1
+    else:
+        j = failure[j - 1]
+
 print(count)
